@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Main</class>
+ <widget class="QWidget" name="Main">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>640</width>
+    <height>480</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>640</width>
+    <height>480</height>
+   </size>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::NoContextMenu</enum>
+  </property>
+  <property name="windowTitle">
+   <string>PyPass</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>password.png</normaloff>password.png</iconset>
+  </property>
+  <widget class="QPushButton" name="btn_encrypt">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>246</y>
+     <width>98</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>encrypt</string>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="txt_encrypted_text">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>330</y>
+     <width>401</width>
+     <height>111</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_title">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>10</y>
+     <width>181</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>32</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>PyPass</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="txt_master_password">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>40</y>
+     <width>211</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string/>
+   </property>
+   <property name="inputMethodHints">
+    <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText</set>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="maxLength">
+    <number>32</number>
+   </property>
+   <property name="echoMode">
+    <enum>QLineEdit::Password</enum>
+   </property>
+   <property name="placeholderText">
+    <string/>
+   </property>
+  </widget>
+  <widget class="Line" name="line">
+   <property name="geometry">
+    <rect>
+     <x>-3</x>
+     <y>80</y>
+     <width>651</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="txt_raw_text">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>130</y>
+     <width>401</width>
+     <height>111</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_master_password">
+   <property name="geometry">
+    <rect>
+     <x>392</x>
+     <y>19</y>
+     <width>120</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Master Password</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_algo">
+   <property name="geometry">
+    <rect>
+     <x>456</x>
+     <y>104</y>
+     <width>120</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Algorithm</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_raw_text">
+   <property name="geometry">
+    <rect>
+     <x>34</x>
+     <y>104</y>
+     <width>120</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Raw Text</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_encrypted_text">
+   <property name="geometry">
+    <rect>
+     <x>32</x>
+     <y>304</y>
+     <width>120</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Encrypted Text</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_decrypt">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>280</y>
+     <width>98</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>decrypt</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_version">
+   <property name="geometry">
+    <rect>
+     <x>553</x>
+     <y>453</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>7</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>PyPass version 1.0</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="algo">
+   <property name="geometry">
+    <rect>
+     <x>453</x>
+     <y>129</y>
+     <width>161</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="editable">
+    <bool>false</bool>
+   </property>
+   <property name="currentIndex">
+    <number>-1</number>
+   </property>
+   <property name="maxCount">
+    <number>50</number>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>txt_master_password</tabstop>
+  <tabstop>txt_raw_text</tabstop>
+  <tabstop>txt_encrypted_text</tabstop>
+  <tabstop>algo</tabstop>
+  <tabstop>btn_encrypt</tabstop>
+  <tabstop>btn_decrypt</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>btn_encrypt</sender>
+   <signal>clicked()</signal>
+   <receiver>txt_encrypted_text</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>78</x>
+     <y>265</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>230</x>
+     <y>385</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_decrypt</sender>
+   <signal>clicked()</signal>
+   <receiver>txt_raw_text</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>343</x>
+     <y>301</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>341</x>
+     <y>206</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
