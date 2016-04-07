@@ -45,21 +45,27 @@ class UiMain(object):
     FONT_TITLE = 0
     FONT_SMALL = 1
 
+    # Colors
+    COLOR_DEFAULT = ""  # use system default
+    COLOR_ERROR = "border: 1px solid red; background: rgb(255, 220, 220);"
+
     # Where the elements should start
     POSITION_LEFT_X = 30
     POSITION_RIGHT_X = 455
     POSITION_TOP_X = 390
     POSITION_SECTION_TOP_Y = 110
 
+    # Object dimensions
     LABEL_LENGTH = 120
     LABEL_HEIGHT = 20
-
     TEXT_HEIGHT = 30
-
     TEXT_AREA_HEIGHT = 110
-
     BUTTON_LENGTH = 100
     BUTTON_HEIGHT = 40
+
+    # Errors
+    ERROR_NO_MASTER = 0
+    ERROR_NO_RAW_TEXT = 1
 
     def __init__(self, main):
         """ __init__
@@ -277,10 +283,21 @@ class UiMain(object):
         """
 
         if not self._check_master_password():
-            self._show_message("Error: The master password is not set")
+            self._show_message("Error: The master password is not set",
+                               self.ERROR_NO_MASTER)
             return
+        else:
+            self.txt_master_password.setStyleSheet(self.COLOR_DEFAULT)
 
         raw_text = self.txt_raw_text.toPlainText()
+
+        if len(raw_text) == 0:
+            self._show_message("Error: A string is required",
+                               self.ERROR_NO_RAW_TEXT)
+            return
+        else:
+            self.txt_raw_text.setStyleSheet(self.COLOR_DEFAULT)
+
         cipher = self.cmb_algorithm.currentText()
 
         my_pass = Password(self.txt_master_password.text(), cipher)
@@ -305,11 +322,18 @@ class UiMain(object):
         master = self.txt_master_password.text()
         return len(master) > 0
 
-    def _show_message(self, message):
+    def _show_message(self, message, error_type):
         """ Show error message
             :param message: The error message
+            :param error_type: The error type
         """
         self.txt_encrypted_text.setPlainText(QtCore.QString(message))
+
+        # set the object to red
+        if error_type == self.ERROR_NO_MASTER:
+            self.txt_master_password.setStyleSheet(self.COLOR_ERROR)
+        if error_type == self.ERROR_NO_RAW_TEXT:
+            self.txt_raw_text.setStyleSheet(self.COLOR_ERROR)
 
     def _get_font_properties(self, font_type):
         """ Get the font properties
