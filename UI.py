@@ -41,7 +41,25 @@ class UiMain(object):
     SIZE_X = 640
     SIZE_Y = 480
 
-    POSITION_START_X = 30
+    # Font types
+    FONT_TITLE = 0
+    FONT_SMALL = 1
+
+    # Where the elements should start
+    POSITION_LEFT_X = 30
+    POSITION_RIGHT_X = 455
+    POSITION_TOP_X = 390
+    POSITION_SECTION_TOP_Y = 110
+
+    LABEL_LENGTH = 120
+    LABEL_HEIGHT = 20
+
+    TEXT_HEIGHT = 30
+
+    TEXT_AREA_HEIGHT = 110
+
+    BUTTON_LENGTH = 100
+    BUTTON_HEIGHT = 40
 
     def __init__(self, main):
         """ __init__
@@ -92,40 +110,43 @@ class UiMain(object):
         """
         # title
         label_object = QtCore.QRect(
-            self.POSITION_START_X, 10, 181, 71)
+            self.POSITION_LEFT_X, 10, 180, 70)
         self.lbl_title.setGeometry(label_object)
-        font = QtGui.QFont()
-        font.setPointSize(32)
-        font.setBold(True)
-        font.setWeight(75)
-        self.lbl_title.setFont(font)
+        self.lbl_title.setFont(self._get_font_properties(self.FONT_TITLE))
         self.lbl_title.setObjectName(_fromUtf8("lbl_title"))
 
         # version
-        label_object = QtCore.QRect(553, 453, 80, 20)
+        label_object = QtCore.QRect(
+            550, 455, self.LABEL_LENGTH, self.LABEL_HEIGHT)
         self.lbl_version.setGeometry(label_object)
-        font = QtGui.QFont()
-        font.setPointSize(7)
-        self.lbl_version.setFont(font)
+        self.lbl_version.setFont(self._get_font_properties(self.FONT_SMALL))
         self.lbl_version.setObjectName(_fromUtf8("lbl_version"))
 
         # master password
-        label_object = QtCore.QRect(392, 19, 120, 20)
+        label_object = QtCore.QRect(
+            self.POSITION_TOP_X, 20,
+            self.LABEL_LENGTH, self.LABEL_HEIGHT)
         self.lbl_master_password.setGeometry(label_object)
         self.lbl_master_password.setObjectName(_fromUtf8("lbl_master_password"))
 
         # algorithm
-        label_object = QtCore.QRect(456, 104, 120, 20)
+        label_object = QtCore.QRect(
+            self.POSITION_RIGHT_X, self.POSITION_SECTION_TOP_Y,
+            self.LABEL_LENGTH, self.LABEL_HEIGHT)
         self.lbl_algorithm.setGeometry(label_object)
         self.lbl_algorithm.setObjectName(_fromUtf8("lbl_algorithm"))
 
         # raw text
-        label_object = QtCore.QRect(34, 104, 120, 20)
+        label_object = QtCore.QRect(
+            self.POSITION_LEFT_X, self.POSITION_SECTION_TOP_Y,
+            self.LABEL_LENGTH, self.LABEL_HEIGHT)
         self.lbl_raw_text.setGeometry(label_object)
         self.lbl_raw_text.setObjectName(_fromUtf8("lbl_raw_text"))
 
         # encrypted text
-        label_object = QtCore.QRect(32, 304, 120, 20)
+        label_object = QtCore.QRect(
+            self.POSITION_LEFT_X, 303,
+            self.LABEL_LENGTH, self.LABEL_HEIGHT)
         self.lbl_encrypted_text.setGeometry(label_object)
         self.lbl_encrypted_text.setObjectName(_fromUtf8("lbl_encrypted_text"))
 
@@ -133,11 +154,12 @@ class UiMain(object):
         """ Set all the buttons for the UI
         """
         button_object = QtCore.QRect(
-            self.POSITION_START_X, 246, 98, 40)
+            self.POSITION_LEFT_X, 245, self.BUTTON_LENGTH, self.BUTTON_HEIGHT)
         self.btn_encrypt.setGeometry(button_object)
         self.btn_encrypt.setObjectName(_fromUtf8("btn_encrypt"))
 
-        button_object = QtCore.QRect(513, 280, 98, 40)
+        button_object = QtCore.QRect(
+            510, 280, self.BUTTON_LENGTH, self.BUTTON_HEIGHT)
         self.btn_decrypt.setGeometry(button_object)
         self.btn_decrypt.setObjectName(_fromUtf8("btn_decrypt"))
 
@@ -145,30 +167,33 @@ class UiMain(object):
         """ Set all the line edit for the UI
         """
         # master password
-        txt_object = QtCore.QRect(390, 40, 211, 27)
+        txt_object = QtCore.QRect(
+            self.POSITION_TOP_X, 40, 220, self.TEXT_HEIGHT)
         self.txt_master_password.setGeometry(txt_object)
-        self.txt_master_password.setText(_fromUtf8(""))
+        self.txt_master_password.setText("")
         self.txt_master_password.setMaxLength(32)
         self.txt_master_password.setEchoMode(QtGui.QLineEdit.Password)
         self.txt_master_password.setObjectName(_fromUtf8("txt_master_password"))
 
-        # encrypted text
-        txt_object = QtCore.QRect(30, 330, 580, 111)
-        self.txt_encrypted_text.setGeometry(txt_object)
-        self.txt_encrypted_text.setObjectName(_fromUtf8("txt_encrypted_text"))
-
         # raw text
-        txt_object = QtCore.QRect(30, 130, 401, 111)
+        txt_object = QtCore.QRect(
+            self.POSITION_LEFT_X, 130, 400, self.TEXT_AREA_HEIGHT)
         self.txt_raw_text.setGeometry(txt_object)
         self.txt_raw_text.setObjectName(_fromUtf8("txt_raw_text"))
+
+        # encrypted text
+        txt_object = QtCore.QRect(
+            self.POSITION_LEFT_X, 325, 580, self.TEXT_AREA_HEIGHT)
+        self.txt_encrypted_text.setGeometry(txt_object)
+        self.txt_encrypted_text.setObjectName(_fromUtf8("txt_encrypted_text"))
 
     def _set_combo(self):
         """ Set all the combo for the UI
         """
-        combo_object = QtCore.QRect(453, 129, 161, 30)
+        combo_object = QtCore.QRect(
+            self.POSITION_RIGHT_X, 130, 160, self.TEXT_HEIGHT)
         self.cmb_algorithm.setGeometry(combo_object)
         self.cmb_algorithm.setEditable(False)
-        self.cmb_algorithm.setMaxCount(50)
         self.cmb_algorithm.setObjectName(_fromUtf8("algorithm"))
 
         # populate with data
@@ -185,7 +210,7 @@ class UiMain(object):
         """
 
         # line
-        self.line.setGeometry(QtCore.QRect(0, 80, 641, 20))
+        self.line.setGeometry(QtCore.QRect(0, 80, 640, 20))
         self.line.setFrameShape(QtGui.QFrame.HLine)
         self.line.setFrameShadow(QtGui.QFrame.Sunken)
         self.line.setObjectName(_fromUtf8("line"))
@@ -241,7 +266,7 @@ class UiMain(object):
         self.lbl_raw_text.setText(
             _translate(UiMain.APP, "Raw Text", None))
         self.lbl_encrypted_text.setText(
-            _translate("Main", "Encrypted Text", None))
+            _translate(UiMain.APP, "Encrypted Text", None))
         self.btn_decrypt.setText(
             _translate(UiMain.APP, "decrypt", None))
         self.lbl_version.setText(
@@ -285,3 +310,17 @@ class UiMain(object):
             :param message: The error message
         """
         self.txt_encrypted_text.setPlainText(QtCore.QString(message))
+
+    def _get_font_properties(self, font_type):
+        """ Get the font properties
+            :param font_type: The font type
+            :return: QFont()
+        """
+        font = QtGui.QFont()
+        if font_type == self.FONT_TITLE:
+            font.setPointSize(32)
+            font.setBold(True)
+            font.setWeight(75)
+        else:
+            font.setPointSize(7)
+        return font
