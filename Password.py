@@ -17,9 +17,10 @@ class Password(object):
     SHELL_EXT = ".sh"
     ENCRYPTED_FILE_SUFFIX = ".enc"
 
-    def __init__(self, pass_key, mode):
+    def __init__(self, pass_key, mode, digest):
         self.pass_key = pass_key
         self.mode = mode
+        self.digest = digest
 
     def encrypt_text(self, raw_text):
         """ Encrypt a string
@@ -43,7 +44,7 @@ class Password(object):
         cmd = "./%s%s" % (cmd, self.SHELL_EXT)
 
         process = subprocess.Popen(
-            [cmd, text, self.pass_key, self.mode],
+            [cmd, text, self.pass_key, self.mode, self.digest],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
         out, err = process.communicate()
@@ -102,3 +103,20 @@ class Password(object):
             "seed-cbc",
             "seed-cfb",
             "seed-ofb"]
+
+    @staticmethod
+    def get_digest_list():
+        """ Get the digest list
+            :return: list
+        """
+        return [
+            "md4",
+            "md5",
+            "ripemd160",
+            "sha",
+            "sha1",
+            "sha224",
+            "sha256",
+            "sha384",
+            "sha512",
+            "whirlpool"]

@@ -37,6 +37,7 @@ class UiMain(object):
     """ UI Class
     """
     APP = "PyPass"
+    VERSION = "1.1"
 
     SIZE_X = 640
     SIZE_Y = 480
@@ -77,6 +78,7 @@ class UiMain(object):
         self.lbl_version = QtGui.QLabel(self.main)
         self.lbl_master_password = QtGui.QLabel(self.main)
         self.lbl_algorithm = QtGui.QLabel(self.main)
+        self.lbl_digest = QtGui.QLabel(self.main)
         self.lbl_raw_text = QtGui.QLabel(self.main)
         self.lbl_encrypted_text = QtGui.QLabel(self.main)
 
@@ -88,6 +90,7 @@ class UiMain(object):
         self.txt_raw_text = QtGui.QPlainTextEdit(self.main)
 
         self.cmb_algorithm = QtGui.QComboBox(self.main)
+        self.cmb_digest = QtGui.QComboBox(self.main)
         self.line = QtGui.QFrame(self.main)
 
     def setup_ui(self):
@@ -141,6 +144,13 @@ class UiMain(object):
             self.LABEL_LENGTH, self.LABEL_HEIGHT)
         self.lbl_algorithm.setGeometry(label_object)
         self.lbl_algorithm.setObjectName(_fromUtf8("lbl_algorithm"))
+
+        # digest
+        label_object = QtCore.QRect(
+            self.POSITION_RIGHT_X, 180,
+            self.LABEL_LENGTH, self.LABEL_HEIGHT)
+        self.lbl_digest.setGeometry(label_object)
+        self.lbl_digest.setObjectName(_fromUtf8("lbl_digest"))
 
         # raw text
         label_object = QtCore.QRect(
@@ -196,6 +206,8 @@ class UiMain(object):
     def _set_combo(self):
         """ Set all the combo for the UI
         """
+
+        # algorithm combo
         combo_object = QtCore.QRect(
             self.POSITION_RIGHT_X, 130, 160, self.TEXT_HEIGHT)
         self.cmb_algorithm.setGeometry(combo_object)
@@ -210,6 +222,23 @@ class UiMain(object):
 
         # select first one
         self.cmb_algorithm.setCurrentIndex(0)
+
+        # digest combo
+
+        combo_object = QtCore.QRect(
+            self.POSITION_RIGHT_X, 200, 160, self.TEXT_HEIGHT)
+        self.cmb_digest.setGeometry(combo_object)
+        self.cmb_digest.setEditable(False)
+        self.cmb_digest.setObjectName(_fromUtf8("digest"))
+
+        # populate with data
+        digest_list = Password.get_digest_list()
+
+        for digest in digest_list:
+            self.cmb_digest.addItem(_fromUtf8(digest))
+
+        # select first one
+        self.cmb_digest.setCurrentIndex(0)
 
     def _set_decorator(self):
         """ Set all the decorators for the UI
@@ -269,14 +298,17 @@ class UiMain(object):
             _translate(UiMain.APP, "Master Password", None))
         self.lbl_algorithm.setText(
             _translate(UiMain.APP, "Algorithm", None))
+        self.lbl_digest.setText(
+            _translate(UiMain.APP, "Digest", None))
         self.lbl_raw_text.setText(
             _translate(UiMain.APP, "Raw Text", None))
         self.lbl_encrypted_text.setText(
             _translate(UiMain.APP, "Encrypted Text", None))
         self.btn_decrypt.setText(
             _translate(UiMain.APP, "decrypt", None))
+        version = "PyPass version %s" % self.VERSION
         self.lbl_version.setText(
-            _translate(UiMain.APP, "PyPass version 1.0", None))
+            _translate(UiMain.APP, version, None))
 
     def _encrypt_data(self):
         """ Encrypt the raw data
@@ -299,8 +331,9 @@ class UiMain(object):
             self.txt_raw_text.setStyleSheet(self.COLOR_DEFAULT)
 
         cipher = self.cmb_algorithm.currentText()
+        digest = self.cmb_digest.currentText()
 
-        my_pass = Password(self.txt_master_password.text(), cipher)
+        my_pass = Password(self.txt_master_password.text(), cipher, digest)
         encrypted_text = my_pass.encrypt_text(raw_text)
 
         self.txt_encrypted_text.setPlainText(QtCore.QString(encrypted_text))
@@ -310,8 +343,9 @@ class UiMain(object):
         """
         encrypted_text = self.txt_encrypted_text.toPlainText()
         cipher = self.cmb_algorithm.currentText()
+        digest = self.cmb_digest.currentText()
 
-        my_pass = Password(self.txt_master_password.text(), cipher)
+        my_pass = Password(self.txt_master_password.text(), cipher, digest)
         raw_text = my_pass.decrypt_text(encrypted_text)
 
         self.txt_raw_text.setPlainText(QtCore.QString(raw_text))
