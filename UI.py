@@ -37,7 +37,7 @@ class UiMain(object):
     """ UI Class
     """
     APP = "PyPass"
-    VERSION = "1.1"
+    VERSION = "1.2"
 
     SIZE_X = 640
     SIZE_Y = 480
@@ -45,28 +45,37 @@ class UiMain(object):
     # Font types
     FONT_TITLE = 0
     FONT_SMALL = 1
+    FONT_ERROR = 2
 
     # Colors
     COLOR_DEFAULT = ""  # use system default
     COLOR_ERROR = "border: 1px solid red; background: rgb(255, 220, 220);"
+    COLOR_ERROR_TEXT = "color: red;"
 
     # Where the elements should start
     POSITION_LEFT_X = 30
     POSITION_RIGHT_X = 455
-    POSITION_TOP_X = 390
+    POSITION_TOP_X_LEFT = 280
+    POSITION_TOP_X_RIGHT = 440
     POSITION_SECTION_TOP_Y = 110
 
     # Object dimensions
     LABEL_LENGTH = 120
     LABEL_HEIGHT = 20
     TEXT_HEIGHT = 30
+    TEXT_LENGTH = 150
     TEXT_AREA_HEIGHT = 110
     BUTTON_LENGTH = 100
     BUTTON_HEIGHT = 40
 
     # Errors
     ERROR_NO_MASTER = 0
-    ERROR_NO_RAW_TEXT = 1
+    ERROR_NO_CONFIRM = 1
+    ERROR_NO_RAW_TEXT = 2
+
+    # Check
+    CHECK_ENCRYPT = 0
+    CHECK_DECRYPT = 1
 
     def __init__(self, main):
         """ __init__
@@ -77,15 +86,18 @@ class UiMain(object):
         self.lbl_title = QtGui.QLabel(self.main)
         self.lbl_version = QtGui.QLabel(self.main)
         self.lbl_master_password = QtGui.QLabel(self.main)
+        self.lbl_confirm_password = QtGui.QLabel(self.main)
         self.lbl_algorithm = QtGui.QLabel(self.main)
         self.lbl_digest = QtGui.QLabel(self.main)
         self.lbl_raw_text = QtGui.QLabel(self.main)
         self.lbl_encrypted_text = QtGui.QLabel(self.main)
+        self.lbl_error = QtGui.QLabel(self.main)
 
         self.btn_encrypt = QtGui.QPushButton(self.main)
         self.btn_decrypt = QtGui.QPushButton(self.main)
 
         self.txt_master_password = QtGui.QLineEdit(self.main)
+        self.txt_confirm_password = QtGui.QLineEdit(self.main)
         self.txt_encrypted_text = QtGui.QPlainTextEdit(self.main)
         self.txt_raw_text = QtGui.QPlainTextEdit(self.main)
 
@@ -133,10 +145,18 @@ class UiMain(object):
 
         # master password
         label_object = QtCore.QRect(
-            self.POSITION_TOP_X, 20,
+            self.POSITION_TOP_X_LEFT, 20,
             self.LABEL_LENGTH, self.LABEL_HEIGHT)
         self.lbl_master_password.setGeometry(label_object)
         self.lbl_master_password.setObjectName(_fromUtf8("lbl_master_password"))
+
+        # confirm password
+        label_object = QtCore.QRect(
+            self.POSITION_TOP_X_RIGHT, 20,
+            self.LABEL_LENGTH, self.LABEL_HEIGHT)
+        self.lbl_confirm_password.setGeometry(label_object)
+        self.lbl_confirm_password.setObjectName(_fromUtf8(
+            "lbl_conform_password"))
 
         # algorithm
         label_object = QtCore.QRect(
@@ -166,6 +186,15 @@ class UiMain(object):
         self.lbl_encrypted_text.setGeometry(label_object)
         self.lbl_encrypted_text.setObjectName(_fromUtf8("lbl_encrypted_text"))
 
+        # errors
+        label_object = QtCore.QRect(
+            160, 270,
+            320, self.LABEL_HEIGHT)
+        self.lbl_error.setFont(self._get_font_properties(self.FONT_ERROR))
+        self.lbl_error.setStyleSheet(self.COLOR_ERROR_TEXT)
+        self.lbl_error.setGeometry(label_object)
+        self.lbl_error.setObjectName(_fromUtf8("lbl_error"))
+
     def _set_buttons(self):
         """ Set all the buttons for the UI
         """
@@ -184,12 +213,20 @@ class UiMain(object):
         """
         # master password
         txt_object = QtCore.QRect(
-            self.POSITION_TOP_X, 40, 220, self.TEXT_HEIGHT)
+            self.POSITION_TOP_X_LEFT, 40, self.TEXT_LENGTH, self.TEXT_HEIGHT)
         self.txt_master_password.setGeometry(txt_object)
-        self.txt_master_password.setText("")
         self.txt_master_password.setMaxLength(32)
         self.txt_master_password.setEchoMode(QtGui.QLineEdit.Password)
         self.txt_master_password.setObjectName(_fromUtf8("txt_master_password"))
+
+        # confirm password
+        txt_object = QtCore.QRect(
+            self.POSITION_TOP_X_RIGHT, 40, self.TEXT_LENGTH, self.TEXT_HEIGHT)
+        self.txt_confirm_password.setGeometry(txt_object)
+        self.txt_confirm_password.setMaxLength(32)
+        self.txt_confirm_password.setEchoMode(QtGui.QLineEdit.Password)
+        self.txt_confirm_password.setObjectName(_fromUtf8(
+            "txt_combo_password"))
 
         # raw text
         txt_object = QtCore.QRect(
@@ -296,6 +333,8 @@ class UiMain(object):
             _translate(UiMain.APP, "PyPass", None))
         self.lbl_master_password.setText(
             _translate(UiMain.APP, "Master Password", None))
+        self.lbl_confirm_password.setText(
+            _translate(UiMain.APP, "Confirm Password", None))
         self.lbl_algorithm.setText(
             _translate(UiMain.APP, "Algorithm", None))
         self.lbl_digest.setText(
@@ -309,26 +348,16 @@ class UiMain(object):
         version = "PyPass version %s" % self.VERSION
         self.lbl_version.setText(
             _translate(UiMain.APP, version, None))
+        self.lbl_error.setText(
+            _translate(UiMain.APP, "", None))
 
     def _encrypt_data(self):
         """ Encrypt the raw data
         """
-
-        if not self._check_master_password():
-            self._show_message("Error: The master password is not set",
-                               self.ERROR_NO_MASTER)
+        if not self._check_for_errors(self.CHECK_ENCRYPT):
             return
-        else:
-            self.txt_master_password.setStyleSheet(self.COLOR_DEFAULT)
 
         raw_text = self.txt_raw_text.toPlainText()
-
-        if len(raw_text) == 0:
-            self._show_message("Error: A string is required",
-                               self.ERROR_NO_RAW_TEXT)
-            return
-        else:
-            self.txt_raw_text.setStyleSheet(self.COLOR_DEFAULT)
 
         cipher = self.cmb_algorithm.currentText()
         digest = self.cmb_digest.currentText()
@@ -341,6 +370,9 @@ class UiMain(object):
     def _decrypt_data(self):
         """ Decrypt the encrypted data
         """
+        if not self._check_for_errors(self.CHECK_DECRYPT):
+            return
+
         encrypted_text = self.txt_encrypted_text.toPlainText()
         cipher = self.cmb_algorithm.currentText()
         digest = self.cmb_digest.currentText()
@@ -350,22 +382,65 @@ class UiMain(object):
 
         self.txt_raw_text.setPlainText(QtCore.QString(raw_text))
 
-    def _check_master_password(self):
-        """ Check if the master password is set
+    def _check_for_errors(self, check_type):
+        """ Check for errors in the form
+            1) Check if the master password is set
+            2) Check if the confirm password is set
+            3) Check if both password matches
+            :param check_type: The type (encrypt, decrypt)
+            :return boolean
         """
-        master = self.txt_master_password.text()
-        return len(master) > 0
+
+        # Check passwords
+        master = str(self.txt_master_password.text()).strip()
+        if len(master) == 0:
+            self._show_message("Error: The master password is not set",
+                               self.ERROR_NO_MASTER)
+            return False
+
+        confirm = str(self.txt_confirm_password.text()).strip()
+        if len(confirm) == 0:
+            self._show_message("Error: The confirm password is not set",
+                               self.ERROR_NO_CONFIRM)
+            return False
+
+        if master != confirm:
+            self._show_message("Error: The passwords do not match",
+                               self.ERROR_NO_MASTER)
+            return False
+
+        self.txt_master_password.setStyleSheet(self.COLOR_DEFAULT)
+        self.txt_confirm_password.setStyleSheet(self.COLOR_DEFAULT)
+
+        # check for empty text
+        if check_type == self.CHECK_ENCRYPT:
+            if len(str(self.txt_raw_text.toPlainText())) == 0:
+                self._show_message("Error: A raw string is required",
+                                   self.ERROR_NO_RAW_TEXT)
+                return False
+        elif check_type == self.CHECK_DECRYPT:
+            if len(str(self.txt_encrypted_text.toPlainText())) == 0:
+                self._show_message("Error: A decrypted string is required",
+                                   self.ERROR_NO_RAW_TEXT)
+                return False
+
+        self.txt_raw_text.setStyleSheet(self.COLOR_DEFAULT)
+        self.txt_encrypted_text.setStyleSheet(self.COLOR_DEFAULT)
+        self.lbl_error.setText("")
+        return True
 
     def _show_message(self, message, error_type):
         """ Show error message
             :param message: The error message
             :param error_type: The error type
         """
-        self.txt_encrypted_text.setPlainText(QtCore.QString(message))
+        self.lbl_error.setText(QtCore.QString(message))
 
         # set the object to red
         if error_type == self.ERROR_NO_MASTER:
             self.txt_master_password.setStyleSheet(self.COLOR_ERROR)
+        if error_type == self.ERROR_NO_CONFIRM:
+            self.txt_confirm_password.setStyleSheet(self.COLOR_ERROR)
         if error_type == self.ERROR_NO_RAW_TEXT:
             self.txt_raw_text.setStyleSheet(self.COLOR_ERROR)
 
@@ -379,6 +454,9 @@ class UiMain(object):
             font.setPointSize(32)
             font.setBold(True)
             font.setWeight(75)
+        elif font_type == self.FONT_ERROR:
+            font.setPointSize(13)
+            font.setBold(True)
         else:
             font.setPointSize(7)
         return font
